@@ -8,7 +8,15 @@ import (
 	"githhub.com/VSBrilyakov/test-app/internal/handler"
 	"githhub.com/VSBrilyakov/test-app/internal/repository"
 	"githhub.com/VSBrilyakov/test-app/internal/service"
+	"github.com/joho/godotenv"
 )
+
+func init() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Ошибка загрузки .env файла")
+	}
+}
 
 func main() {
 	config, err := configs.NewConfig()
@@ -16,7 +24,12 @@ func main() {
 		log.Fatalf("Config reading error: %s", err.Error())
 	}
 
-	repo := repository.NewRepository()
+	db, err := repository.NewPostgresDB(&config.Postgres)
+	if err != nil {
+		log.Fatalf("Postgres connection error: %s", err.Error())
+	}
+
+	repo := repository.NewRepository(db)
 	services := service.NewService(repo)
 	handlers := handler.NewHandler(services)
 

@@ -1,3 +1,10 @@
 server:
   host: "localhost"
   port: 8080
+
+postgres:
+  host: "localhost"
+  port: 5432
+  name: "postgres"
+  user: "admin"
+  ssl_mode: "disable"
