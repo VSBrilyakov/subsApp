@@ -36,7 +36,7 @@ func NewConfig() (*Config, error) {
 	if err != nil {
 		return nil, err
 	}
-	loadedConfig.Postgres.Password = os.Getenv("BD_PASSWORD")
+	loadedConfig.Postgres.Password = os.Getenv("PG_PASSWORD")
 
 	return &loadedConfig, nil
 }
