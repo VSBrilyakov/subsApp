@@ -3,12 +3,12 @@ package main
 import (
 	"strconv"
 
-	"github.com/VSBrilyakov/test-app/configs"
-	"github.com/VSBrilyakov/test-app/docs"
-	"github.com/VSBrilyakov/test-app/internal"
-	"github.com/VSBrilyakov/test-app/internal/handler"
-	"github.com/VSBrilyakov/test-app/internal/repository"
-	"github.com/VSBrilyakov/test-app/internal/service"
+	"github.com/VSBrilyakov/subsApp/configs"
+	"github.com/VSBrilyakov/subsApp/docs"
+	"github.com/VSBrilyakov/subsApp/internal"
+	"github.com/VSBrilyakov/subsApp/internal/handler"
+	"github.com/VSBrilyakov/subsApp/internal/repository"
+	"github.com/VSBrilyakov/subsApp/internal/service"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
@@ -49,9 +49,9 @@ func init() {
 	gin.SetMode(gin.ReleaseMode)
 }
 
-// @title Test App API
+// @title Subs App API
 // @version 1.0
-// @description API Server for TestApp Application
+// @description API Server for SubsApp Application
 func main() {
 	db, err := repository.NewPostgresDB(&config.Postgres)
 	if err != nil {

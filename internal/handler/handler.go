@@ -1,12 +1,12 @@
 package handler
 
 import (
-	"github.com/VSBrilyakov/test-app/internal/service"
+	"github.com/VSBrilyakov/subsApp/internal/service"
 	"github.com/gin-gonic/gin"
 	"github.com/swaggo/files"
 	"github.com/swaggo/gin-swagger"
 
-	_ "github.com/VSBrilyakov/test-app/docs"
+	_ "github.com/VSBrilyakov/subsApp/docs"
 )
 
 type Handler struct {
@@ -19,9 +19,10 @@ func NewHandler(services *service.Service) *Handler {
 
 func (h *Handler) InitRoutes() *gin.Engine {
 	router := gin.New()
-	//router.Use(cors.Default())
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	api := router.Group("/api")
+
 	{
 		v1 := api.Group("/v1")
 		{
@@ -36,7 +37,6 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			}
 		}
 	}
-	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	return router
 }

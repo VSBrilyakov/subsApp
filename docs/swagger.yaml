@@ -4,6 +4,7 @@ definitions:
   handler.errorMsg:
     properties:
       message:
+        example: error message
         type: string
     type: object
   handler.successNewSubMsg:
@@ -12,7 +13,13 @@ definitions:
         example: 1
         type: integer
     type: object
-  test_app.Subscription:
+  handler.totalCostSum:
+    properties:
+      sum:
+        example: 1000
+        type: integer
+    type: object
+  subsApp.Subscription:
     properties:
       end_date:
         example: 07-2021
@@ -37,7 +44,7 @@ definitions:
     - start_date
     - user_id
     type: object
-  test_app.SubscriptionJSON:
+  subsApp.SubscriptionJSON:
     properties:
       end_date:
         example: 07-2021
@@ -62,7 +69,7 @@ definitions:
     - start_date
     - user_id
     type: object
-  test_app.UpdSubscription:
+  subsApp.UpdSubscription:
     properties:
       end_date:
         example: 07-2021
@@ -82,8 +89,8 @@ definitions:
     type: object
 info:
   contact: {}
-  description: API Server for TestApp Application
-  title: Test App API
+  description: API Server for SubsApp Application
+  title: Subs App API
   version: "1.0"
 paths:
   /api/v1/subscribe:
@@ -98,7 +105,7 @@ paths:
         name: input
         required: true
         schema:
-          $ref: '#/definitions/test_app.Subscription'
+          $ref: '#/definitions/subsApp.Subscription'
       produces:
       - application/json
       responses:
@@ -140,7 +147,7 @@ paths:
       tags:
       - subscriptions
     get:
-      description: Get a subscription information from database by subscription id
+      description: Get a subscription information from database by its id
       operationId: get-subscription
       parameters:
       - description: Subscription ID
@@ -154,7 +161,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/test_app.SubscriptionJSON'
+            $ref: '#/definitions/subsApp.SubscriptionJSON'
         "400":
           description: Bad Request
           schema:
@@ -177,7 +184,7 @@ paths:
         name: input
         required: true
         schema:
-          $ref: '#/definitions/test_app.UpdSubscription'
+          $ref: '#/definitions/subsApp.UpdSubscription'
       - description: Subscription ID
         in: path
         name: id
@@ -197,6 +204,70 @@ paths:
           schema:
             $ref: '#/definitions/handler.errorMsg'
       summary: UpdSubscription
+      tags:
+      - subscriptions
+  /api/v1/subscribe/all:
+    get:
+      description: Get information about all subscriptions from the database
+      operationId: get-all-subscriptions
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/subsApp.SubscriptionJSON'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.errorMsg'
+      summary: GetAllSubscriptions
+      tags:
+      - subscriptions
+  /api/v1/subscribe/sum:
+    get:
+      description: Get the total cost of all subscriptions for a selected period,
+        filtered by user ID and subscription name
+      operationId: get-total-cost-sum-subscriptions
+      parameters:
+      - description: User ID
+        in: query
+        name: user_id
+        required: true
+        type: string
+      - description: Service name
+        in: query
+        name: service_name
+        required: true
+        type: string
+      - description: Date from
+        in: query
+        name: date_from
+        required: true
+        type: string
+      - description: Date to
+        in: query
+        name: date_to
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.totalCostSum'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.errorMsg'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.errorMsg'
+      summary: GetSubsCostSum
       tags:
       - subscriptions
 swagger: "2.0"

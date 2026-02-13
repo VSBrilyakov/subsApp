@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	test_app "github.com/VSBrilyakov/test-app"
+	subsapp "github.com/VSBrilyakov/subsApp"
 	"github.com/jmoiron/sqlx"
 	"github.com/sirupsen/logrus"
 )
@@ -20,7 +20,7 @@ func NewSubPostgres(db *sqlx.DB) *SubPostgres {
 	return &SubPostgres{db: db}
 }
 
-func (s *SubPostgres) CreateSubscription(sub test_app.Subscription) (int, error) {
+func (s *SubPostgres) CreateSubscription(sub subsapp.Subscription) (int, error) {
 	var id int
 	query := fmt.Sprintf("INSERT INTO %s (service_name, price, user_id, start_date, end_date) VALUES ($1, $2, $3, $4, $5) RETURNING id", subscriptionTable)
 	logrus.Debug(fmt.Sprintf("CreateSubscription query: %s", query))
@@ -33,8 +33,8 @@ func (s *SubPostgres) CreateSubscription(sub test_app.Subscription) (int, error)
 	return id, nil
 }
 
-func (s *SubPostgres) GetSubscription(subId int) (*test_app.Subscription, error) {
-	var sub test_app.Subscription
+func (s *SubPostgres) GetSubscription(subId int) (*subsapp.Subscription, error) {
+	var sub subsapp.Subscription
 	query := fmt.Sprintf("SELECT * FROM %s WHERE id = $1", subscriptionTable)
 	logrus.Debug(fmt.Sprintf("GetSubscription query: %s", query))
 
@@ -46,7 +46,7 @@ func (s *SubPostgres) GetSubscription(subId int) (*test_app.Subscription, error)
 	return &sub, err
 }
 
-func (s *SubPostgres) UpdateSubscription(subId int, input test_app.UpdSubscription) error {
+func (s *SubPostgres) UpdateSubscription(subId int, input subsapp.UpdSubscription) error {
 	if _, err := s.GetSubscription(subId); err != nil {
 		return err
 	}
@@ -113,8 +113,8 @@ func (s *SubPostgres) DeleteSubscription(subId int) error {
 	return err
 }
 
-func (s *SubPostgres) GetAllSubscriptions() (*[]test_app.Subscription, error) {
-	var subs []test_app.Subscription
+func (s *SubPostgres) GetAllSubscriptions() (*[]subsapp.Subscription, error) {
+	var subs []subsapp.Subscription
 	query := fmt.Sprintf("SELECT * FROM %s ORDER BY id", subscriptionTable)
 	logrus.Debug("GetAllSubscriptions query: %s", query)
 

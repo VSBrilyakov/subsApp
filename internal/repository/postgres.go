@@ -3,7 +3,7 @@ package repository
 import (
 	"fmt"
 
-	"github.com/VSBrilyakov/test-app/configs"
+	"github.com/VSBrilyakov/subsApp/configs"
 	"github.com/jmoiron/sqlx"
 	"github.com/pressly/goose/v3"
 

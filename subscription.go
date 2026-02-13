@@ -1,4 +1,4 @@
-package test_app
+package subsApp
 
 import (
 	"database/sql"

@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"time"
 
-	testApp "github.com/VSBrilyakov/test-app"
+	subsApp "github.com/VSBrilyakov/subsApp"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 )
@@ -21,20 +21,20 @@ const (
 	dateFromAfterDateToError = "date_from cannot be after date_to"
 )
 
-// @Summary CreateSubscription
-// @Tags subscriptions
-// @Description Add a subscription information into database
-// @ID create-subscription
-// @Accept  json
-// @Produce  json
-// @Param input body test_app.Subscription true "Subscription main info"
-// @Success 200 {object} successNewSubMsg
-// @Failure 500 {object} errorMsg
-// @Router /api/v1/subscribe [post]
+// @Summary 		CreateSubscription
+// @Tags 			subscriptions
+// @Description 	Add a subscription information into database
+// @ID 				create-subscription
+// @Accept 			json
+// @Param 			input body subsApp.Subscription true "Subscription main info"
+// @Produce 		json
+// @Success 		200 {object} successNewSubMsg
+// @Failure 		500 {object} errorMsg
+// @Router 			/api/v1/subscribe [post]
 func (h *Handler) createSubscription(c *gin.Context) {
 	logrus.Debug(fmt.Sprintf("incoming: %s", c.Request.URL.String()))
 
-	var input testApp.Subscription
+	var input subsApp.Subscription
 	if err := c.BindJSON(&input); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, invalidBodyError)
 		return
@@ -49,16 +49,16 @@ func (h *Handler) createSubscription(c *gin.Context) {
 	newSuccessResponse(c, successNewSubMsg{Id: id})
 }
 
-// @Summary GetSubscription
-// @Tags subscriptions
-// @Description Get a subscription information from database by subscription id
-// @ID get-subscription
-// @Produce  json
-// @Param id path int true "Subscription ID"
-// @Success 200 {object} test_app.SubscriptionJSON
-// @Failure 400 {object} errorMsg
-// @Failure 500 {object} errorMsg
-// @Router /api/v1/subscribe/{id} [get]
+// @Summary 		GetSubscription
+// @Tags 			subscriptions
+// @Description 	Get a subscription information from database by its id
+// @ID 				get-subscription
+// @Param 			id path int true "Subscription ID"
+// @Produce  		json
+// @Success 		200 {object} subsApp.SubscriptionJSON
+// @Failure 		400 {object} errorMsg
+// @Failure 		500 {object} errorMsg
+// @Router 			/api/v1/subscribe/{id} [get]
 func (h *Handler) getSubscription(c *gin.Context) {
 	logrus.Debug(fmt.Sprintf("incoming: %s", c.Request.URL.String()))
 
@@ -77,17 +77,17 @@ func (h *Handler) getSubscription(c *gin.Context) {
 	newSuccessResponse(c, sub.GetJSON())
 }
 
-// @Summary UpdSubscription
-// @Tags subscriptions
-// @Description Update subscription information
-// @ID upd-subscription
-// @Accept  json
-// @Param input body test_app.UpdSubscription true "Subscription updated info"
-// @Param id path int true "Subscription ID"
-// @Success 200 {object} emptyResponse
-// @Failure 400 {object} errorMsg
-// @Failure 500 {object} errorMsg
-// @Router /api/v1/subscribe/{id} [put]
+// @Summary 		UpdSubscription
+// @Tags 			subscriptions
+// @Description 	Update subscription information
+// @ID 				upd-subscription
+// @Accept  		json
+// @Param 			input body subsApp.UpdSubscription true "Subscription updated info"
+// @Param 			id path int true "Subscription ID"
+// @Success 		200 {object} emptyResponse
+// @Failure 		400 {object} errorMsg
+// @Failure 		500 {object} errorMsg
+// @Router 			/api/v1/subscribe/{id} [put]
 func (h *Handler) updateSubscription(c *gin.Context) {
 	logrus.Debug(fmt.Sprintf("incoming: %s", c.Request.URL.String()))
 
@@ -97,7 +97,7 @@ func (h *Handler) updateSubscription(c *gin.Context) {
 		return
 	}
 
-	var input testApp.UpdSubscription
+	var input subsApp.UpdSubscription
 	if err := c.BindJSON(&input); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, invalidBodyError)
 		return
@@ -111,15 +111,15 @@ func (h *Handler) updateSubscription(c *gin.Context) {
 	newSuccessResponse(c, emptyResponse{})
 }
 
-// @Summary DeleteSubscription
-// @Tags subscriptions
-// @Description Remove subscription information from database by subscription id
-// @ID del-subscription
-// @Param id path int true "Subscription ID"
-// @Success 200 {object} emptyResponse
-// @Failure 400 {object} errorMsg
-// @Failure 500 {object} errorMsg
-// @Router /api/v1/subscribe/{id} [delete]
+// @Summary 		DeleteSubscription
+// @Tags 			subscriptions
+// @Description 	Remove subscription information from database by subscription id
+// @ID 				del-subscription
+// @Param 			id path int true "Subscription ID"
+// @Success 		200 {object} emptyResponse
+// @Failure 		400 {object} errorMsg
+// @Failure 		500 {object} errorMsg
+// @Router 			/api/v1/subscribe/{id} [delete]
 func (h *Handler) deleteSubscription(c *gin.Context) {
 	logrus.Debug(fmt.Sprintf("incoming: %s", c.Request.URL.String()))
 
@@ -137,6 +137,14 @@ func (h *Handler) deleteSubscription(c *gin.Context) {
 	newSuccessResponse(c, emptyResponse{})
 }
 
+// @Summary 		GetAllSubscriptions
+// @Tags 			subscriptions
+// @Description 	Get information about all subscriptions from the database
+// @ID 				get-all-subscriptions
+// @Produce  		json
+// @Success 		200 {object} []subsApp.SubscriptionJSON
+// @Failure 		500 {object} errorMsg
+// @Router 			/api/v1/subscribe/all [get]
 func (h *Handler) getAllSubscriptions(c *gin.Context) {
 	logrus.Debug(fmt.Sprintf("incoming: %s", c.Request.URL.String()))
 
@@ -149,6 +157,19 @@ func (h *Handler) getAllSubscriptions(c *gin.Context) {
 	newSuccessResponse(c, subs)
 }
 
+// @Summary 		GetSubsCostSum
+// @Tags 			subscriptions
+// @Description 	Get the total cost of all subscriptions for a selected period, filtered by user ID and subscription name
+// @ID 				get-total-cost-sum-subscriptions
+// @Produce 		json
+// @Param 			user_id query string true "User ID"
+// @Param 			service_name query string true "Service name"
+// @Param 			date_from query string true "Date from"
+// @Param 			date_to query string true "Date to"
+// @Success 		200 {object} totalCostSum
+// @Failure 		400 {object} errorMsg
+// @Failure 		500 {object} errorMsg
+// @Router 			/api/v1/subscribe/sum [get]
 func (h *Handler) getSubsSum(c *gin.Context) {
 	logrus.Debug(fmt.Sprintf("incoming: %s", c.Request.URL.String()))
 
@@ -187,5 +208,5 @@ func (h *Handler) getSubsSum(c *gin.Context) {
 		return
 	}
 
-	newSuccessResponse(c, gin.H{"sum": sum})
+	newSuccessResponse(c, totalCostSum{Sum: sum})
 }

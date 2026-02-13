@@ -9,11 +9,15 @@ import (
 )
 
 type errorMsg struct {
-	Message string `json:"message"`
+	Message string `json:"message" example:"error message"`
 }
 
 type successNewSubMsg struct {
 	Id int `json:"id" example:"1"`
+}
+
+type totalCostSum struct {
+	Sum int `json:"sum" example:"1000"`
 }
 
 type emptyResponse struct{}

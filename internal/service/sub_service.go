@@ -3,8 +3,8 @@ package service
 import (
 	"time"
 
-	test_app "github.com/VSBrilyakov/test-app"
-	"github.com/VSBrilyakov/test-app/internal/repository"
+	subsapp "github.com/VSBrilyakov/subsApp"
+	"github.com/VSBrilyakov/subsApp/internal/repository"
 )
 
 type SubscriptionService struct {
@@ -15,15 +15,15 @@ func NewSubscriptionService(repo *repository.Repository) *SubscriptionService {
 	return &SubscriptionService{repo: repo}
 }
 
-func (s *SubscriptionService) CreateSubscription(sub test_app.Subscription) (int, error) {
+func (s *SubscriptionService) CreateSubscription(sub subsapp.Subscription) (int, error) {
 	return s.repo.CreateSubscription(sub)
 }
 
-func (s *SubscriptionService) GetSubscription(subId int) (*test_app.Subscription, error) {
+func (s *SubscriptionService) GetSubscription(subId int) (*subsapp.Subscription, error) {
 	return s.repo.GetSubscription(subId)
 }
 
-func (s *SubscriptionService) UpdateSubscription(subId int, input test_app.UpdSubscription) error {
+func (s *SubscriptionService) UpdateSubscription(subId int, input subsapp.UpdSubscription) error {
 	return s.repo.UpdateSubscription(subId, input)
 }
 
@@ -31,7 +31,7 @@ func (s *SubscriptionService) DeleteSubscription(subId int) error {
 	return s.repo.DeleteSubscription(subId)
 }
 
-func (s *SubscriptionService) GetAllSubscriptions() (*[]test_app.Subscription, error) {
+func (s *SubscriptionService) GetAllSubscriptions() (*[]subsapp.Subscription, error) {
 	return s.repo.GetAllSubscriptions()
 }
 

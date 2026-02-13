@@ -9,6 +9,6 @@ RUN apt-get update
 RUN apt-get -y install postgresql-client
 
 RUN go mod download
-RUN go build -o test-app ./cmd/main.go
+RUN go build -o subsApp ./cmd/main.go
 
-CMD ["./test-app"]
+CMD ["./subsApp"]

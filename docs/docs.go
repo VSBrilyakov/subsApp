@@ -36,7 +36,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/test_app.Subscription"
+                            "$ref": "#/definitions/subsApp.Subscription"
                         }
                     }
                 ],
@@ -56,9 +56,102 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/subscribe/all": {
+            "get": {
+                "description": "Get information about all subscriptions from the database",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "subscriptions"
+                ],
+                "summary": "GetAllSubscriptions",
+                "operationId": "get-all-subscriptions",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/subsApp.SubscriptionJSON"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/handler.errorMsg"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/subscribe/sum": {
+            "get": {
+                "description": "Get the total cost of all subscriptions for a selected period, filtered by user ID and subscription name",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "subscriptions"
+                ],
+                "summary": "GetSubsCostSum",
+                "operationId": "get-total-cost-sum-subscriptions",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "user_id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Service name",
+                        "name": "service_name",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Date from",
+                        "name": "date_from",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Date to",
+                        "name": "date_to",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/handler.totalCostSum"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/handler.errorMsg"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/handler.errorMsg"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/subscribe/{id}": {
             "get": {
-                "description": "Get a subscription information from database by subscription id",
+                "description": "Get a subscription information from database by its id",
                 "produces": [
                     "application/json"
                 ],
@@ -80,7 +173,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/test_app.SubscriptionJSON"
+                            "$ref": "#/definitions/subsApp.SubscriptionJSON"
                         }
                     },
                     "400": {
@@ -114,7 +207,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/test_app.UpdSubscription"
+                            "$ref": "#/definitions/subsApp.UpdSubscription"
                         }
                     },
                     {
@@ -193,7 +286,8 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "message": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "error message"
                 }
             }
         },
@@ -206,7 +300,16 @@ const docTemplate = `{
                 }
             }
         },
-        "test_app.Subscription": {
+        "handler.totalCostSum": {
+            "type": "object",
+            "properties": {
+                "sum": {
+                    "type": "integer",
+                    "example": 1000
+                }
+            }
+        },
+        "subsApp.Subscription": {
             "type": "object",
             "required": [
                 "price",
@@ -240,7 +343,7 @@ const docTemplate = `{
                 }
             }
         },
-        "test_app.SubscriptionJSON": {
+        "subsApp.SubscriptionJSON": {
             "type": "object",
             "required": [
                 "price",
@@ -274,7 +377,7 @@ const docTemplate = `{
                 }
             }
         },
-        "test_app.UpdSubscription": {
+        "subsApp.UpdSubscription": {
             "type": "object",
             "properties": {
                 "end_date": {
@@ -308,8 +411,8 @@ var SwaggerInfo = &swag.Spec{
 	Host:             "",
 	BasePath:         "",
 	Schemes:          []string{},
-	Title:            "Test App API",
-	Description:      "API Server for TestApp Application",
+	Title:            "Subs App API",
+	Description:      "API Server for SubsApp Application",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",
