@@ -1,2 +1,5 @@
+build:
+	docker-compose build app
+
 run:
-	docker-compose up -d
+	docker-compose up app -d

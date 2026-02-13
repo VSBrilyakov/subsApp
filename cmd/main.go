@@ -1,7 +1,13 @@
 package main
 
 import (
+	"context"
+	"errors"
+	"net/http"
+	"os"
+	"os/signal"
 	"strconv"
+	"syscall"
 
 	"github.com/VSBrilyakov/subsApp/configs"
 	"github.com/VSBrilyakov/subsApp/docs"
@@ -57,6 +63,13 @@ func main() {
 	if err != nil {
 		logrus.Fatalf("postgres connection error: %s", err.Error())
 	}
+	//close connection to db after exiting main()
+	defer func() {
+		err = db.Close()
+		if err := db.Close(); err != nil {
+			logrus.Errorf("error occured on db connection close: %s", err.Error())
+		}
+	}()
 	logrus.Info("postgres connection established")
 
 	err = repository.DoMigrates(db)
@@ -69,7 +82,21 @@ func main() {
 	handlers := handler.NewHandler(services)
 
 	srv := new(internal.Server)
-	if err := srv.Run(config.Server, handlers.InitRoutes()); err != nil {
-		logrus.Fatalf("server run failed: %s", err.Error())
+	go func() {
+		if err := srv.Run(config.Server, handlers.InitRoutes()); !errors.Is(err, http.ErrServerClosed) {
+			logrus.Fatalf("server run failed: %s", err.Error())
+		}
+	}()
+	logrus.Info("SubsApp started")
+
+	//graceful shutdown
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT)
+	<-quit
+
+	logrus.Info("SubsApp shutting down")
+
+	if err := srv.Stop(context.Background()); err != nil {
+		logrus.Errorf("error occured on server shutting down: %s", err.Error())
 	}
 }
